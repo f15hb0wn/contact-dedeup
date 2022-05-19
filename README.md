@@ -1,5 +1,5 @@
 # contact-dedupe
-This project is a simple (pretty dump) PHP script that imports an Outlook contact CSV export, It creates an output CSV that can be re-imported into Outlook.
+This project is a simple (pretty dumb) PHP script that imports an Outlook contact CSV export, It creates an output CSV that can be re-imported into Outlook.
 The logic merges on unique First name and Last name (which admittedly can cause incorrect merges) 
 
 To merge and de-deplicate Outlook contacts go through these steps:

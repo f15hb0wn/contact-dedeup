@@ -20,11 +20,13 @@ class DeDupe {
         $c = 0;//Counter for the current row
         $columns = array();
         $output=array();
-        while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
+        $notes=0;
+        while (($data = fgetcsv($handle, 100000, ",")) !== FALSE) {
             $c++;
              if ($c == 1){//Put the schema/fields/columns into a reference array
                 foreach ($data as $key => $value){
                     $columns[$key]=$value;
+                    if ($value=='Notes') $notes = $key;
                 }
                 $output[0]=$data;//Output the header into the new array
             } else {
@@ -38,7 +40,8 @@ class DeDupe {
                             if (strlen($v) < strlen($data[$i])) $output[$uniqId][$i] = $data[$i];
                         }
                     }
-                }                
+                }
+                $output[$uniqId][$notes]='';//Unset Notes
             }
             
         }

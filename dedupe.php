@@ -47,7 +47,7 @@ class DeDupe {
             } else {
                 if (strlen($data[$last]) < 3) continue;//Don't combine short names
                 if (strlen($data[$first]) < 3) continue;//Don't combine short names
-                $uniqId = strtolower($data[$first]).strtolower($data[$last]);//This assumes 1 is first name and 2 is last name
+                $uniqId = strtolower($data[$first]).strtolower($data[$last]);
                 if (strlen($uniqId) < 5) continue;//Don't import short / empty people names
                 if (!array_key_exists($uniqId,$output)) {
                     $output[$uniqId]=$data;//Insert the entire row

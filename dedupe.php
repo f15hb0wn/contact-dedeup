@@ -21,16 +21,33 @@ class DeDupe {
         $columns = array();
         $output=array();
         $notes=0;
+        $first=0;
+        $last=0;
+        $bphone=0;
+        $hphone=0;
+        $mphone=0;
+        $pphone=0;
+        $email=0;
         while (($data = fgetcsv($handle, 100000, ",")) !== FALSE) {
             $c++;
              if ($c == 1){//Put the schema/fields/columns into a reference array
                 foreach ($data as $key => $value){
                     $columns[$key]=$value;
+                    //Find Array location of critical fields
                     if ($value=='Notes') $notes = $key;
+                    if ($value=='First Name') $first = $key;
+                    if ($value=='Last Name') $last = $key;
+                    if ($value=='Business Phone') $bphone = $key;
+                    if ($value=='Home Phone') $hphone = $key;
+                    if ($value=='Mobile Phone') $mphone = $key;
+                    if ($value=='Primary Phone') $pphone = $key;
+                    if ($value=='E-mail Address') $email = $key;
                 }
                 $output[0]=$data;//Output the header into the new array
             } else {
-                $uniqId = strtolower($data[1]).strtolower($data[2]);//This assumes 1 is first name and 2 is last name
+                if (strlen($data[$last]) < 3) continue;//Don't combine short names
+                if (strlen($data[$first]) < 3) continue;//Don't combine short names
+                $uniqId = strtolower($data[$first]).strtolower($data[$last]);//This assumes 1 is first name and 2 is last name
                 if (strlen($uniqId) < 5) continue;//Don't import short / empty people names
                 if (!array_key_exists($uniqId,$output)) {
                     $output[$uniqId]=$data;//Insert the entire row
@@ -41,7 +58,14 @@ class DeDupe {
                         }
                     }
                 }
+                //Update Settings
                 $output[$uniqId][$notes]='';//Unset Notes
+                //Remove duplicate phone numbers
+                if ($output[$uniqId][$bphone] == $output[$uniqId][$mphone]) $output[$uniqId][$bphone]='';
+                if ($output[$uniqId][$hphone] == $output[$uniqId][$mphone]) $output[$uniqId][$hphone]='';
+                if ($output[$uniqId][$bphone] == $output[$uniqId][$pphone]) $output[$uniqId][$bphone]='';
+                if ($output[$uniqId][$hphone] == $output[$uniqId][$pphone]) $output[$uniqId][$hphone]='';
+                if ($output[$uniqId][$pphone] == $output[$uniqId][$mphone]) $output[$uniqId][$pphone]='';
             }
             
         }
